@@ -1,343 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Baby Chronicle — Automated SMS Baby Memory Journal</title>
-<style>
-  :root {
-    --cobalt: #0041AB;
-    --cobalt-dark: #00327F;
-    --cobalt-light: #E5ECF9;
-    --cream: #FAF4E4;
-    --cream-dark: #F3EAD2;
-    --ink: #22303F;
-    --white: #FFFFFF;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Baby Chronicle</title>
+    <style>
+        @font-face {
+            font-family: 'Norelia Daily Sans';
+            src: url('assets/NoreliaDailySans.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --primary: #FFFFC5;   /* pale yellow */
+            --secondary: #FFFDF2; /* cream */
+            --ink: #1A1A17;       /* black text */
+            --ink-soft: #4B4A42;
+            --hairline: #E9E4C9;
+            --white: #FFFFFF;
+        }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: var(--cream);
-    color: var(--ink);
-    line-height: 1.6;
-  }
+        * { box-sizing: border-box; }
 
-  .container {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 24px;
-  }
+        html { scroll-behavior: smooth; }
 
-  header.site {
-    background: var(--cobalt);
-    color: var(--cream);
-    padding: 14px 0;
-  }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--ink);
+            background: var(--secondary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
 
-  header.site .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+        a { color: inherit; }
 
-  .logo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
+        .wrap {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
 
-  nav a {
-    color: var(--cream);
-    text-decoration: none;
-    margin-left: 24px;
-    font-size: 0.95rem;
-    opacity: 0.9;
-  }
+        /* ---------- Nav ---------- */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 0 8px;
+        }
 
-  nav a:hover { opacity: 1; text-decoration: underline; }
+        .logo {
+            font-family: 'Norelia Daily Sans', cursive;
+            font-size: 2.1em;
+            letter-spacing: 0.5px;
+            color: var(--ink);
+        }
 
-  /* Hero */
-  .hero {
-    background: var(--cobalt);
-    color: var(--cream);
-    text-align: center;
-    padding: 88px 24px 96px;
-  }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            font-size: 0.98em;
+            color: var(--ink-soft);
+        }
 
-  .hero h1 {
-    font-size: 2.6rem;
-    line-height: 1.2;
-    max-width: 780px;
-    margin: 0 auto 22px;
-    font-weight: 800;
-  }
+        .nav-links a {
+            text-decoration: none;
+        }
 
-  .hero p.sub {
-    font-size: 1.2rem;
-    max-width: 680px;
-    margin: 0 auto;
-    opacity: 0.95;
-  }
+        .nav-links a:hover {
+            color: var(--ink);
+        }
 
-  /* Sections */
-  section {
-    padding: 72px 0;
-  }
+        /* ---------- Hero ---------- */
+        .hero {
+            background:
+                radial-gradient(ellipse 900px 520px at 50% 0%, var(--primary) 0%, rgba(255,255,197,0.55) 45%, rgba(255,255,197,0) 78%),
+                var(--secondary);
+            padding-bottom: 60px;
+        }
 
-  section.alt { background: var(--cream-dark); }
+        .hero-inner {
+            text-align: center;
+            max-width: 760px;
+            margin: 0 auto;
+            padding-top: 56px;
+        }
 
-  .section-title {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--cobalt);
-    margin-bottom: 12px;
-  }
+        .hero h1 {
+            font-family: 'Norelia Daily Sans', cursive;
+            font-weight: normal;
+            font-size: 3.4em;
+            line-height: 1.12;
+            margin: 0 0 22px;
+            color: var(--ink);
+        }
 
-  .section-sub {
-    text-align: center;
-    max-width: 640px;
-    margin: 0 auto 48px;
-    color: var(--ink);
-  }
+        .hero-sub {
+            font-size: 1.15em;
+            color: var(--ink-soft);
+            max-width: 560px;
+            margin: 0 auto 40px;
+        }
 
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 28px;
-  }
+        /* signup form, getflect-style underline inputs */
+        .signup {
+            max-width: 640px;
+            margin: 0 auto;
+        }
 
-  .step {
-    background: var(--white);
-    border: 1px solid var(--cream-dark);
-    border-top: 4px solid var(--cobalt);
-    border-radius: 10px;
-    padding: 28px 24px;
-    box-shadow: 0 4px 14px rgba(0, 65, 171, 0.08);
-  }
+        .signup-row {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 1px solid var(--hairline);
+            padding-bottom: 18px;
+        }
 
-  .step .num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--cobalt);
-    color: var(--cream);
-    font-weight: 800;
-    margin-bottom: 14px;
-  }
+        .signup-row input {
+            flex: 1 1 150px;
+            min-width: 140px;
+            border: none;
+            background: transparent;
+            font-size: 1em;
+            padding: 10px 4px;
+            color: var(--ink);
+            outline: none;
+        }
 
-  .step h3 {
-    color: var(--cobalt);
-    font-size: 1.1rem;
-    margin-bottom: 8px;
-  }
+        .signup-row input::placeholder { color: #9B9787; }
 
-  .step p { font-size: 0.98rem; }
+        .signup-row button {
+            flex: 0 0 auto;
+            background: var(--ink);
+            color: var(--white);
+            border: none;
+            padding: 12px 26px;
+            border-radius: 999px;
+            font-size: 0.98em;
+            cursor: pointer;
+            transition: opacity 0.15s ease;
+        }
 
-  /* Sign-up form */
-  .form-wrap {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 40px 36px;
-    max-width: 560px;
-    margin: 0 auto;
-    border: 1px solid var(--cream-dark);
-    box-shadow: 0 6px 20px rgba(0, 65, 171, 0.10);
-  }
+        .signup-row button:hover { opacity: 0.85; }
 
-  .form-wrap h3 {
-    color: var(--cobalt);
-    font-size: 1.5rem;
-    margin-bottom: 24px;
-    text-align: center;
-  }
+        .consent {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 0.78em;
+            color: var(--ink-soft);
+        }
 
-  label {
-    display: block;
-    font-weight: 600;
-    margin: 16px 0 6px;
-    font-size: 0.95rem;
-  }
+        .consent input { margin-top: 4px; }
 
-  input[type="text"],
-  input[type="tel"] {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #CBD5E1;
-    border-radius: 8px;
-    font-size: 1rem;
-    background: var(--white);
-  }
+        .consent a { text-decoration: underline; }
 
-  input:focus {
-    outline: none;
-    border-color: var(--cobalt);
-    box-shadow: 0 0 0 3px var(--cobalt-light);
-  }
+        /* ---------- Hero imagery ---------- */
+        .hero-images {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 24px;
+            align-items: end;
+            margin: 56px 0 0;
+        }
 
-  .consent {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin: 18px 0 22px;
-    font-size: 0.8rem;
-    color: #55606B;
-    line-height: 1.45;
-  }
+        .hero-images img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
 
-  .consent input[type="checkbox"] {
-    margin-top: 3px;
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-    accent-color: var(--cobalt);
-  }
+        .hero-images .baby-photo {
+            height: 420px;
+            border-radius: 18px;
+        }
 
-  .consent a { color: var(--cobalt); }
+        .hero-images .phone-photo {
+            height: 340px;
+            border-radius: 18px;
+            align-self: end;
+        }
 
-  button {
-    width: 100%;
-    padding: 14px;
-    background: var(--cobalt);
-    color: var(--cream);
-    border: none;
-    border-radius: 8px;
-    font-size: 1.05rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
+        /* ---------- How it works ---------- */
+        .section {
+            padding: 88px 0;
+        }
 
-  button:hover { background: var(--cobalt-dark); }
+        .section-heading {
+            font-family: 'Norelia Daily Sans', cursive;
+            font-size: 2.4em;
+            text-align: center;
+            margin: 0 0 12px;
+        }
 
-  /* Footer */
-  footer {
-    background: var(--cobalt-dark);
-    color: var(--cream);
-    padding: 40px 24px 28px;
-    text-align: center;
-  }
+        .section-lede {
+            text-align: center;
+            color: var(--ink-soft);
+            max-width: 480px;
+            margin: 0 auto 56px;
+        }
 
-  footer .links a {
-    color: var(--cream);
-    margin: 0 12px;
-    font-size: 0.95rem;
-    text-decoration: underline;
-  }
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
 
-  .compliance {
-    margin-top: 24px;
-    font-size: 0.85rem;
-    opacity: 0.9;
-    max-width: 640px;
-    margin-left: auto;
-    margin-right: auto;
-  }
+        .step {
+            text-align: left;
+            padding-top: 22px;
+            border-top: 2px solid var(--ink);
+        }
 
-  /* Responsive */
-  @media (max-width: 640px) {
-    .hero { padding: 64px 20px 72px; }
-    .hero h1 { font-size: 1.9rem; }
-    .hero p { font-size: 1.05rem; }
-    section { padding: 56px 0; }
-    .section-title { font-size: 1.6rem; }
-    .form-wrap { padding: 32px 22px; }
-    .steps { grid-template-columns: 1fr; }
-    nav a { margin-left: 14px; }
-  }
-</style>
+        .step .num {
+            font-family: 'Norelia Daily Sans', cursive;
+            font-size: 1.6em;
+            color: var(--ink-soft);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .step h3 {
+            margin: 0 0 10px;
+            font-size: 1.15em;
+        }
+
+        .step p {
+            margin: 0;
+            color: var(--ink-soft);
+            font-size: 0.98em;
+        }
+
+        /* ---------- Pricing ---------- */
+        .pricing-wrap {
+            background: var(--primary);
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .price-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 36px 32px;
+            text-align: left;
+        }
+
+        .price-card.featured {
+            background: var(--ink);
+            color: var(--white);
+            position: relative;
+        }
+
+        .price-card.featured .tag {
+            position: absolute;
+            top: 22px;
+            right: 24px;
+            font-size: 0.72em;
+            background: var(--primary);
+            color: var(--ink);
+            padding: 4px 12px;
+            border-radius: 999px;
+        }
+
+        .price-card .plan-name {
+            font-size: 0.95em;
+            color: var(--ink-soft);
+            margin-bottom: 6px;
+        }
+
+        .price-card.featured .plan-name {
+            color: #D9D6C4;
+        }
+
+        .price-card .amount {
+            font-family: 'Norelia Daily Sans', cursive;
+            font-size: 2.5em;
+            margin-bottom: 4px;
+        }
+
+        .price-card .amount span {
+            font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.4em;
+            color: var(--ink-soft);
+        }
+
+        .price-card.featured .amount span { color: #D9D6C4; }
+
+        .price-card p.desc {
+            font-size: 0.95em;
+            margin-top: 18px;
+            color: var(--ink-soft);
+        }
+
+        .price-card.featured p.desc { color: #EDEBDD; }
+
+        .pricing-note {
+            max-width: 620px;
+            margin: 40px auto 0;
+            text-align: center;
+            font-size: 0.98em;
+            color: #4B4A32;
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            padding: 48px 0 60px;
+            text-align: center;
+            font-size: 0.82em;
+            color: var(--ink-soft);
+        }
+
+        @media (max-width: 720px) {
+            .hero h1 { font-size: 2.3em; }
+            .hero-images { grid-template-columns: 1fr; }
+            .hero-images .baby-photo,
+            .hero-images .phone-photo { height: 280px; }
+            .steps { grid-template-columns: 1fr; gap: 32px; }
+            .pricing-cards { grid-template-columns: 1fr; }
+            .nav-links { gap: 18px; font-size: 0.88em; }
+        }
+    </style>
 </head>
 <body>
 
-  <header class="site">
-    <div class="container">
-      <div class="logo">The Baby Chronicle</div>
-      <nav>
-        <a href="#how">How It Works</a>
-        <a href="#signup">Sign Up</a>
-      </nav>
-    </div>
-  </header>
+    <header class="wrap">
+        <nav>
+            <div class="logo">The Baby Chronicle</div>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#pricing">Pricing</a>
+            </div>
+        </nav>
+    </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container">
-      <h1>Capture every milestone, simply by texting back.</h1>
-      <p>The Baby Chronicle sends you automated weekly prompts. You reply with texts or photos, and we build a private digital memory vault for your child.</p>
-    </div>
-  </section>
+    <section class="hero">
+        <div class="wrap hero-inner">
+            <h1>You're busy.<br>Make creating your baby book easy.</h1>
+            <p class="hero-sub">The Baby Chronicle texts you prompts every couple of days, you reply when it works best for you, and we build you a personalized baby book with your favorite photos and memories from your baby's first year. Easy as that.</p>
 
-  <!-- HOW IT WORKS -->
-  <section id="how">
-    <div class="container">
-      <h2 class="section-title">How It Works</h2>
-      <p class="section-sub">Four simple steps to a lifetime of memories.</p>
-      <div class="steps">
-        <div class="step">
-          <span class="num">1</span>
-          <h3>Sign Up</h3>
-          <p>Tell us your baby's name and your time zone.</p>
+            <form class="signup">
+                <div class="signup-row">
+                    <input type="text" name="parent_name" placeholder="Parent's name" required>
+                    <input type="text" name="baby_name" placeholder="Baby's name" required>
+                    <input type="tel" name="phone" placeholder="Phone number" pattern="[0-9]{10}" required>
+                    <button type="submit">Get Started</button>
+                </div>
+                <div class="consent">
+                    <input type="checkbox" required>
+                    <label>By checking this box, I consent to recurring SMS memory prompts from The Baby Chronicle at my number. Not a condition of purchase. Msg freq varies. Msg &amp; data rates may apply. Reply STOP to cancel, HELP for help. Terms: <a href="https://docs.google.com/document/d/1_M_Ucho06wlEQBTwWvavJL9FRhP2AMmHhV1MNRqOOk4/edit?tab=t.0">Terms</a> Privacy: <a href="https://docs.google.com/document/d/1zpPdfFWJ7z_C1sp_eZcMce_c89sSUQ6C03RiFaXoFtE/edit?pli=1&tab=t.0">Privacy</a>.</label>
+                </div>
+            </form>
         </div>
-        <div class="step">
-          <span class="num">2</span>
-          <h3>Get Prompted</h3>
-          <p>Receive 2-3 thoughtful text messages a week.</p>
+
+        <div class="wrap">
+            <div class="hero-images">
+                <img class="baby-photo" src="assets/baby-photo.jpg" alt="Smiling baby wrapped in a soft blanket">
+                <img class="phone-photo" src="assets/iphone-mockup.jpeg" alt="Phone showing a text prompt from The Baby Chronicle and a parent's reply">
+            </div>
         </div>
-        <div class="step">
-          <span class="num">3</span>
-          <h3>Reply &amp; Save</h3>
-          <p>Text back your stories and photos. We organize them automatically.</p>
+    </section>
+
+    <section class="section" id="how-it-works">
+        <div class="wrap">
+            <h2 class="section-heading">How It Works</h2>
+            <p class="section-lede">Three simple steps. No app to open, no photos to sort — just texts you already know how to answer.</p>
+            <div class="steps">
+                <div class="step">
+                    <span class="num">1</span>
+                    <h3>Sign Up</h3>
+                    <p>Tell us some information about your baby (or future baby).</p>
+                </div>
+                <div class="step">
+                    <span class="num">2</span>
+                    <h3>Get Prompted</h3>
+                    <p>Receive 3-4 thoughtful text messages a week.</p>
+                </div>
+                <div class="step">
+                    <span class="num">3</span>
+                    <h3>Reply &amp; Save</h3>
+                    <p>Text back your stories and photos. We organize them automatically.</p>
+                </div>
+            </div>
         </div>
-        <div class="step">
-          <span class="num">4</span>
-          <h3>Your Memory Book</h3>
-          <p>We send you a memory book on your baby's first birthday with the memories, milestones, and photos you shared each week.</p>
+    </section>
+
+    <section class="section pricing-wrap" id="pricing">
+        <div class="wrap">
+            <h2 class="section-heading">Pricing</h2>
+            <p class="section-lede" style="color:#4B4A32;">One plan, two ways to pay. Every plan includes text prompts to your phone for capturing memories and photos, plus a finished baby book delivered around your baby's first birthday.</p>
+
+            <div class="pricing-cards">
+                <div class="price-card">
+                    <div class="plan-name">Monthly</div>
+                    <div class="amount">$11.99<span>/mo</span></div>
+                    <p class="desc">Billed monthly. Cancel anytime.</p>
+                </div>
+                <div class="price-card featured">
+                    <span class="tag">Best Value</span>
+                    <div class="plan-name">Full Year</div>
+                    <div class="amount">$139.99<span>/yr</span></div>
+                    <p class="desc">One payment for the whole first year.</p>
+                </div>
+            </div>
+
+            <p class="pricing-note">Both plans include weekly text prompts to capture your baby's memories and photos, plus a personalized baby book — shared with you on your baby's first birthday.</p>
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- SIGN-UP FORM -->
-  <section id="signup" class="alt">
-    <div class="container">
-      <div class="form-wrap">
-        <h3>Start Your Baby's Chronicle</h3>
-        <form action="#" method="post">
-          <label for="parent-name">Parent's Name</label>
-          <input type="text" id="parent-name" name="parentName" required placeholder="Your name">
-
-          <label for="baby-name">Baby's Name</label>
-          <input type="text" id="baby-name" name="babyName" required placeholder="Baby's name">
-
-          <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" required placeholder="(555) 123-4567">
-
-          <label class="consent">
-            <input type="checkbox" name="smsConsent" required>
-            <span>By checking this box, I consent to recurring SMS memory prompts from The Baby Chronicle at my number. Not a condition of purchase. Msg freq varies. Msg &amp; data rates may apply. Reply STOP to cancel, HELP for help. Terms: [Terms URL] Privacy: [Privacy URL].</span>
-          </label>
-
-          <button type="submit">Sign Up</button>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="links">
-      <a href="#privacy">Privacy Policy</a>
-      <a href="#terms">Terms of Service</a>
-    </div>
-    <div class="compliance">
-      No mobile information will be shared with third parties/affiliates for marketing or promotional purposes.
-    </div>
-  </footer>
+    <footer class="wrap">
+        No mobile information will be shared with third parties/affiliates for marketing or promotional purposes.
+    </footer>
 
 </body>
 </html>
